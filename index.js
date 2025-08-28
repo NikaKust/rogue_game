@@ -71,30 +71,36 @@ function Game() {
         width: TILE_W,
         height: TILE_H
       });
-      if (map[y][x] === "W") tile.addClass("tileW"); 
+
+      if (map[y][x] === "W") {
+        tile.addClass("tileW");
+      }
+
+      if (hero.x === x && hero.y === y) {
+        tile.addClass("tileP");
+        tile.append($("<div class='health'></div>").css("width", hero.hp + "%"));
+      }
+
+      let enemy = enemies.find(e => e.x === x && e.y === y);
+      if (enemy) {
+        tile.addClass("tileE");
+        tile.append($("<div class='health'></div>").css("width", enemy.hp + "%"));
+      }
+
+      if (potions.some(p => p.x === x && p.y === y)) {
+        tile.addClass("tileHP");
+      }
+
+      if (swords.some(s => s.x === x && s.y === y)) {
+        tile.addClass("tileSW");
+      }
+
       $(".field").append(tile);
     }
   }
-
-  swords.forEach(s => createTile("tileSW", s));
-  potions.forEach(p => createTile("tileHP", p));
-
-  enemies.forEach(e => createTile("tileE", e, e.hp));
-
-  createTile("tileP", hero, hero.hp);
   }
 
-  function createTile(className, obj, hp = null) {
-    let t = $("<div class='tile'></div>")
-      .addClass(className)
-      .css({ left: obj.x*TILE_W, top: obj.y*TILE_H, width: TILE_W, height: TILE_H });
-    if (hp !== null) {
-      t.append($("<div class='health'></div>").css("width", hp+"%"));
-    }
-    $(".field").append(t);
-  }
-
-  // wasd негодяйское
+  // wasd 
   function bindKeys() {
     $(document).keydown(e => {
       let { code } = e;
