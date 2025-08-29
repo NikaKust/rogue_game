@@ -23,21 +23,32 @@ function Game() {
 
   // карта
   function generateMap() {
-    map = Array.from({ length: ROWS }, () => Array(COLS).fill("W"));
+  map = Array.from({ length: ROWS }, () => Array(COLS).fill("W"));
 
-    let rooms = [];
-    let roomCount = rand(5, 10);
-    for (let i = 0; i < roomCount; i++) {
-      let w = rand(3, 8), h = rand(3, 8);
-      let x = rand(1, COLS - w - 1), y = rand(1, ROWS - h - 1);
-      carveRoom(x, y, w, h);
-      rooms.push({ x: x + Math.floor(w/2), y: y + Math.floor(h/2) });
-    }
+  let roomCount = rand(5, 10);
+  for (let i = 0; i < roomCount; i++) {
+    let w = rand(3, 8), h = rand(3, 8);
+    let x = rand(1, COLS - w - 1), y = rand(1, ROWS - h - 1);
+    carveRoom(x, y, w, h);
+  }
 
-    for (let i = 1; i < rooms.length; i++) {
-      connectRooms(rooms[i-1], rooms[i]);
+  let vertCount = rand(3, 5);
+  for (let i = 0; i < vertCount; i++) {
+    let x = rand(1, COLS - 2);
+    for (let y = 0; y < ROWS; y++) {
+      map[y][x] = "";
     }
   }
+
+  let horizCount = rand(3, 5);
+  for (let i = 0; i < horizCount; i++) {
+    let y = rand(1, ROWS - 2);
+    for (let x = 0; x < COLS; x++) {
+      map[y][x] = "";
+    }
+  }
+}
+
 
   function carveRoom(x, y, w, h) {
     for (let j = y; j < y+h; j++)
@@ -45,12 +56,6 @@ function Game() {
         map[j][i] = "";
   }
 
-  function connectRooms(r1, r2) {
-    for (let x = Math.min(r1.x, r2.x); x <= Math.max(r1.x, r2.x); x++)
-      map[r1.y][x] = "";
-    for (let y = Math.min(r1.y, r2.y); y <= Math.max(r1.y, r2.y); y++)
-      map[y][r2.x] = "";
-  }
 
   function placeEntities(count, extra = () => ({})) {
     let list = [];
